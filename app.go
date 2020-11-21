@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -23,7 +24,8 @@ func main() {
 
 	// Start the server
 	go func() {
-		srv.ListenAndServe()
+		// srv.ListenAndServe()
+		log.Print(srv.ListenAndServe()) // show middleware logger output on standard console
 	}()
 	// Wait for an interrupt
 	c := make(chan os.Signal, 1)

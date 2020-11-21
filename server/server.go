@@ -1,13 +1,16 @@
 package server
 
 import (
+	"compress/flate"
 	"fmt"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	v1 "abidhmuhsin.com/gowebapp/server/api/v1"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 )
 
 // HelloWorld is a sample handler
@@ -20,12 +23,12 @@ func NewRouter() http.Handler {
 	router := chi.NewRouter()
 
 	// Set up our middleware with sane defaults
-	// router.Use(middleware.RealIP)
-	// router.Use(middleware.Logger)
-	// router.Use(middleware.Recoverer)
-	// compressor := middleware.NewCompressor(flate.DefaultCompression)
-	// router.Use(compressor.Handler)
-	// router.Use(middleware.Timeout(60 * time.Second))
+	router.Use(middleware.RealIP)
+	router.Use(middleware.Logger)
+	router.Use(middleware.Recoverer)
+	compressor := middleware.NewCompressor(flate.DefaultCompression)
+	router.Use(compressor.Handler)
+	router.Use(middleware.Timeout(60 * time.Second))
 
 	// Set up our root handlers
 	router.Get("/", HelloWorld)
