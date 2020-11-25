@@ -1,0 +1,40 @@
+Create some users using HTTP POST with the path /users:
+
+curl -XPOST localhost:8080/users -H 'application/json' -d \
+ '{"id":"1","lastname":"Pu","firstname":"Kak","age":18,"email":"k@te.st"}'
+curl -XPOST localhost:8080/users -H 'application/json' -d \
+ '{"id":"2","lastname":"Faehrlich","firstname":"Sergey","age":24,"email":"s@te.st"}'
+curl -XPOST localhost:8080/users -H 'application/json' -d \
+ '{"id":"3","lastname":"Gator","firstname":"Ali","age":30,"email":"a@te.st"}'
+
+Get the full user list using HTTP GET with the path /users:
+curl localhost:8080/users
+# [{"id":"1","lastname":"Puh","firstname":"Kak","age":18,"email":"k@te.st"},{"id":"2","lastname":"Faehrlich","firstname":"Sergey","age":24,"email":"s@te.st"},{"id":"3","lastname":"Gator","firstname":"Ali","age":30,"email":"a@te.st"}]
+
+Get a single user using HTTP GET with the path /users/{id}:
+curl localhost:8080/users/2
+# {"id":"2","lastname":"Faehrlich","firstname":"Sergey","age":24,"email":"s@te.st"}
+
+Try to get a single user that doesn’t exist:
+curl -v localhost:8080/users/4
+# ...
+# < HTTP/1.1 404 Not Found
+# < Date: Thu, 09 Jul 2020 20:03:04 GMT
+# < Content-Length: 0
+# ...
+
+Update a user using HTTP PUT with the path /users/{id}:
+curl -XPUT localhost:8080/users/1 -H "Content-Type: application/json" -d \ '{"id":"4","lastname":"Puh","firstname":"Kak","age":18,"email":"k@te.st"}'
+# {"id":"4","lastname":"Puh","firstname":"Kak","age":18,"email":"k@te.st"}
+
+Delete the updated user using HTTP DELETE with the path /users/{id}:
+curl -XDELETE localhost:8080/users/4
+
+Get the updated user list:
+curl localhost:8080/users
+# [{"id":"2","lastname":"Faehrlich","firstname":"Sergey","age":24,"email":"s@te.st"},{"id":"3","lastname":"Gator","firstname":"Ali","age":30,"email":"a@te.st"}]
+
+For windows ' dint work. and needed to escape " with \"
+
+curl localhost/api/users/ -H "Content-Type: application/json"  -d "{\"id\":\
+"5\",\"lastname\":\"Pu\",\"firstname\":\"Kak\",\"age\":18,\"email\":\"k@te.st\"}"

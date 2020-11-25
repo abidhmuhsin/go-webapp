@@ -8,9 +8,11 @@ import (
 	"time"
 
 	v1 "abidhmuhsin.com/gowebapp/server/api/v1"
+	users "abidhmuhsin.com/gowebapp/server/crudjsonusers"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/httplog"
 )
 
 // HelloWorld is a sample handler
@@ -24,17 +26,32 @@ func NewRouter() http.Handler {
 
 	// Set up our middleware with sane defaults
 	router.Use(middleware.RealIP)
-	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 	compressor := middleware.NewCompressor(flate.DefaultCompression)
 	router.Use(compressor.Handler)
 	router.Use(middleware.Timeout(60 * time.Second))
+
+	//router.Use(middleware.Logger)
+	// Logger
+	logger := httplog.NewLogger("httplog-example", httplog.Options{
+		// JSON: true,
+		Concise: true,
+		// Tags: map[string]string{
+		// 	"version": "v1.0-81aa4244d9fc8076a",
+		// 	"env":     "dev",
+		// },
+	})
+	router.Use(httplog.RequestLogger(logger))
+	router.Use(middleware.Heartbeat("/ping"))
 
 	// Set up our root handlers
 	router.Get("/", HelloWorld)
 
 	// Set up our API
 	router.Mount("/api/v1/", v1.NewRouter())
+
+	// Set up users API
+	router.Mount("/api/users/", users.NewRouter())
 
 	// Set up static file serving
 	staticPath, _ := filepath.Abs("../../static/")
