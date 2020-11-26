@@ -9,6 +9,7 @@ import (
 
 	v1 "abidhmuhsin.com/gowebapp/server/api/v1"
 	users "abidhmuhsin.com/gowebapp/server/crudjsonusers"
+	validatedusers "abidhmuhsin.com/gowebapp/server/validatedusers"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -52,6 +53,9 @@ func NewRouter() http.Handler {
 
 	// Set up users API
 	router.Mount("/api/users/", users.NewRouter())
+
+	// Set up validated users API
+	router.Mount("/api/users-v/", validatedusers.NewRouter())
 
 	// Set up static file serving
 	staticPath, _ := filepath.Abs("../../static/")
