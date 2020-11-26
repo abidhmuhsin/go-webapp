@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"time"
 
+	bookroutes "abidhmuhsin.com/gowebapp/mvc/routes"
 	v1 "abidhmuhsin.com/gowebapp/server/api/v1"
 	users "abidhmuhsin.com/gowebapp/server/crudjsonusers"
 	validatedusers "abidhmuhsin.com/gowebapp/server/validatedusers"
@@ -56,6 +57,9 @@ func NewRouter() http.Handler {
 
 	// Set up validated users API
 	router.Mount("/api/users-v/", validatedusers.NewRouter())
+
+	// Pass router to Books mvc and register /book/ - routes
+	bookroutes.RegisterBookStoreRoutes(router)
 
 	// Set up static file serving
 	staticPath, _ := filepath.Abs("../../static/")
