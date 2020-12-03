@@ -1,0 +1,3 @@
+index.html content
+
+http.FileServer on "/*" will serve the browsable directory if there is no index.html file in the static path root.

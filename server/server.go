@@ -3,6 +3,7 @@ package server
 import (
 	"compress/flate"
 	"fmt"
+	"log"
 	"net/http"
 	"path/filepath"
 	"time"
@@ -47,7 +48,7 @@ func NewRouter() http.Handler {
 	router.Use(middleware.Heartbeat("/ping"))
 
 	// Set up our root handlers
-	router.Get("/", HelloWorld)
+	router.Get("/h", HelloWorld)
 
 	// Set up our API
 	router.Mount("/api/v1/", v1.NewRouter())
@@ -62,9 +63,14 @@ func NewRouter() http.Handler {
 	bookroutes.RegisterBookStoreRoutes(router)
 
 	// Set up static file serving
-	staticPath, _ := filepath.Abs("../../static/")
+	staticPath, _ := filepath.Abs("static")
 	fs := http.FileServer(http.Dir(staticPath))
-	router.Handle("/*", fs)
+	log.Printf("Serving static web files from: %s", staticPath)
+	router.Handle("/*", fs) // Tested working with only "/*". Dint work with /static/
+
+	// Set up SPA - static file serving with Deep linking sub routes for SPAs
+	StaticFileServer(router, "/spa", "static/spa/")
+	StaticFileServer(router, "/spa2", "static/spa2/")
 
 	return router
 }
