@@ -11,6 +11,7 @@ import (
 	bookroutes "abidhmuhsin.com/gowebapp/mvc/routes"
 	v1 "abidhmuhsin.com/gowebapp/server/api/v1"
 	users "abidhmuhsin.com/gowebapp/server/crudjsonusers"
+	authcontroller "abidhmuhsin.com/gowebapp/server/jwtauth"
 	validatedusers "abidhmuhsin.com/gowebapp/server/validatedusers"
 
 	"github.com/go-chi/chi"
@@ -34,7 +35,7 @@ func NewRouter() http.Handler {
 	router.Use(compressor.Handler)
 	router.Use(middleware.Timeout(60 * time.Second))
 
-	//router.Use(middleware.Logger)
+	//router.Use(middleware.Logger)		// plain, text logger
 	// Logger
 	logger := httplog.NewLogger("httplog-example", httplog.Options{
 		// JSON: true,
@@ -61,6 +62,9 @@ func NewRouter() http.Handler {
 
 	// Pass router to Books mvc and register /book/ - routes
 	bookroutes.RegisterBookStoreRoutes(router)
+
+	// JWT - Auth based calls
+	router.Mount("/api/jwt", authcontroller.NewRouter()) // ending / on mount path is optional
 
 	// Set up static file serving
 	staticPath, _ := filepath.Abs("static")
